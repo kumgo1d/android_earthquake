@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,10 +12,10 @@ import java.util.List;
 public class EarthquakeRecyclerViewAdapter extends
         RecyclerView.Adapter<EarthquakeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Earthquake> mEarthquakes;
+    private final List<Earthquake> mEarthquakeData;
 
-    public EarthquakeRecyclerViewAdapter(List<Earthquake> earthquakes) {
-        mEarthquakes = earthquakes;
+    public EarthquakeRecyclerViewAdapter(List<Earthquake> earthquakeData) {
+        mEarthquakeData = earthquakeData;
     }
 
     @Override
@@ -29,13 +28,13 @@ public class EarthquakeRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.earthquake = mEarthquakes.get(position);
-        holder.detailsView.setText(mEarthquakes.get(position).toString());
+        holder.earthquake = mEarthquakeData.get(position);
+        holder.detailsView.setText(mEarthquakeData.get(position).toString());
     }
 
     @Override
     public int getItemCount() {
-        return mEarthquakes.size();
+        return mEarthquakeData.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
