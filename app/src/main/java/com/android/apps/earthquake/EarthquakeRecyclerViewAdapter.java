@@ -7,51 +7,66 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.apps.earthquake.databinding.ListItemEarthquakeBinding;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class EarthquakeRecyclerViewAdapter extends
         RecyclerView.Adapter<EarthquakeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Earthquake> mEarthquakeData;
+    //Earthquake list data
+    private final List<Earthquake> mEarthquakes;
 
+    //시간과 경도 데이터 형식
+    private static final SimpleDateFormat TIME_FORMAT =
+            new SimpleDateFormat("HH:mm", Locale.US);
+    private static final NumberFormat MAGNITUDE_FORMAT =
+            new DecimalFormat("0.0");
+
+    //생성자에서 list data 초기화
     public EarthquakeRecyclerViewAdapter(List<Earthquake> earthquakeData) {
-        mEarthquakeData = earthquakeData;
+        mEarthquakes = earthquakeData;
     }
 
     @Override
+    //바인딩 클래스 인스턴스를 생성
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_earthquake, parent, false);
-
-        return new ViewHolder(view);
+        ListItemEarthquakeBinding binding = ListItemEarthquakeBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
+    //바인딩 수행
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.earthquake = mEarthquakeData.get(position);
-        holder.detailsView.setText(mEarthquakeData.get(position).toString());
+        Earthquake earthquake = mEarthquakes.get(position);
+        holder.binding.setEarthquake(earthquake);
+        holder.binding.executePendingBindings(); //바인딩 즉시 수행
     }
 
     @Override
     public int getItemCount() {
-        return mEarthquakeData.size();
+        return mEarthquakes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View parentView;
-        public final TextView detailsView;
-        public Earthquake earthquake;
+        //바인딩 클래스 인스턴스를 인자로 받아 형식 변수를 한 번 초기화
+        public final ListItemEarthquakeBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            parentView = itemView;
-            detailsView = (TextView)
-                    itemView.findViewById(R.id.list_item_earthquake_details);
+        public ViewHolder(ListItemEarthquakeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.setTimeformat(TIME_FORMAT);
+            binding.setMagnitudeformat(MAGNITUDE_FORMAT);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + detailsView.getText() +"'";
+            return super.toString() + " '" + binding.details.getText() +"'";
         }
     }
 }
