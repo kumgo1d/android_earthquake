@@ -1,6 +1,7 @@
 package com.android.apps.earthquake;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,6 +33,7 @@ public class EarthquakeListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private EarthquakeRecyclerViewAdapter mEarthquakeAdapter =
             new EarthquakeRecyclerViewAdapter(mEarthquakeData);
+    private int mMinimumMagnitude = 0;
 
     protected EarthquakeViewModel earthquakeViewModel;
 
@@ -84,7 +87,24 @@ public class EarthquakeListFragment extends Fragment {
                         }
                     }
                 });
+
+        //OnSharedPreferenceChangeListener를 등록한다.
+        SharedPreferences prefs =
+                PreferenceManager.getDefaultSharedPreferences(getContext());
+        prefs.registerOnSharedPreferenceChangeListener(mPrefListener);
     }
+
+    //지진 리스트에 지진 데이터를 채우는 리스너. 사용자가 선택한 새 진도 설정값을 기준으로 해당 데이터만 채운다.
+    private SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if(PreferencesActivity.PREF_MIN_MAG.equals(key)) {
+                        List<Earthquake> earthquakes = earthquakeViewModel.getEarthquakes().getValue();
+                        if(earthquakes != null) setEarthquakes(earthquakes);
+                    }
+                }
+            };
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -105,10 +125,23 @@ public class EarthquakeListFragment extends Fragment {
     }
 
     public void setEarthquakes(List<Earthquake> earthquakes) {
+        updateFromPreferences();
+
         for(Earthquake earthquake : earthquakes) {
-            if(!mEarthquakeData.contains(earthquake)) {
-                mEarthquakeData.add(earthquake);
-                mEarthquakeAdapter.notifyItemInserted(mEarthquakeData.indexOf(earthquake));
+            if(earthquake.getMagnitude() >= mMinimumMagnitude) {
+                if(!mEarthquakeData.contains(earthquake)) {
+                    mEarthquakeData.add(earthquake);
+                    mEarthquakeAdapter.notifyItemInserted(mEarthquakeData.indexOf(earthquake));
+                }
+            }
+        }
+
+        if(mEarthquakeData != null && mEarthquakeData.size() > 0) {
+            for(int i = mEarthquakeData.size() - 1; i >= 0; i--) {
+                if(mEarthquakeData.get(i).getMagnitude() < mMinimumMagnitude) {
+                    mEarthquakeData.remove(i);
+                    mEarthquakeAdapter.notifyItemRemoved(i);
+                }
             }
         }
         mSwipeToRefreshView.setRefreshing(false); //새로고침 표시가 나타나지 않게
@@ -118,5 +151,11 @@ public class EarthquakeListFragment extends Fragment {
         if(mListener != null) {
             mListener.onListFragmentRefreshRequested();
         }
+    }
+
+    private void updateFromPreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        //공유 프레퍼런스에서 선택한 진도 이상의 지진 데이터를 보여주기 위함
+        mMinimumMagnitude = Integer.parseInt(prefs.getString(PreferencesActivity.PREF_MIN_MAG, "3"));
     }
 }

@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- v14 머티리얼 디자인 프레퍼런스 테마 오버레이 -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
 </resources>

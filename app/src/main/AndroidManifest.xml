@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.apps.earthquake">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PreferencesActivity">
+            <intent-filter>
+                <!--백그라운드 데이터 설정을 사용자가 변경하면 인텐트가 수행하기 위함 -->
+                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".EarthquakeMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
