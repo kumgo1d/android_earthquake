@@ -35,7 +35,7 @@ public class EarthquakeViewModel extends AndroidViewModel {
     private static final String TAG = "EarthquakeUpdate";
 
     //지진 데이터가 저장된 List를 참조하는 MutableLiveData
-    private MutableLiveData<List<Earthquake>> earthquakes;
+    private LiveData<List<Earthquake>> earthquakes;
 
     public EarthquakeViewModel(Application application) {
         super(application);
@@ -45,7 +45,11 @@ public class EarthquakeViewModel extends AndroidViewModel {
     //채워지지 않았다면 피드에서 데이터를 가져온다.
     public LiveData<List<Earthquake>> getEarthquakes() {
         if(earthquakes == null) {
-            earthquakes = new MutableLiveData<List<Earthquake>>();
+            earthquakes = EarthquakeDatabaseAccessor
+                    .getInstance(getApplication())
+                    .earthquakeDAO()
+                    .loadAllEarthquakes();
+
             loadEarthquakes();
         }
         return earthquakes;
@@ -149,13 +153,19 @@ public class EarthquakeViewModel extends AndroidViewModel {
                 } catch (SAXException e) {
                     Log.e(TAG, "SAX Exception.", e);
                 }
+
+                //새로 파싱된 Earthquakes 배열을 추가한다.
+                EarthquakeDatabaseAccessor
+                        .getInstance(getApplication())
+                        .earthquakeDAO()
+                        .insertEarthquakes(earthquakes);
+
                 //결과 배열에 반환.
                 return earthquakes;
             }
             @Override
             protected void onPostExecute(List<Earthquake> data) {
-                //라이브 데이터를 새 List로 변경.
-                earthquakes.setValue(data);
+
             }
         }.execute();
     }

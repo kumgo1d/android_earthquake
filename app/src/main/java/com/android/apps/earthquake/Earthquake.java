@@ -2,11 +2,19 @@ package com.android.apps.earthquake;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@Entity
 public class Earthquake {
+    @NonNull
+    @PrimaryKey
     private String mId;
     private Date mDate;
     private String mDetails;
