@@ -11,11 +11,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EarthquakeSearchResultActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
         <activity android:name=".PreferencesActivity">
             <intent-filter>
-                <!--백그라운드 데이터 설정을 사용자가 변경하면 인텐트가 수행하기 위함 -->
-                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <!-- 백그라운드 데이터 설정을 사용자가 변경하면 인텐트가 수행하기 위함 -->
+                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".EarthquakeMainActivity">
@@ -24,7 +35,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".EarthquakeSearchResultActivity"/>
         </activity>
+
+        <provider
+            android:name=".EarthquakeSearchProvider"
+            android:authorities="com.android.provider.earthquake" />
     </application>
 
 </manifest>

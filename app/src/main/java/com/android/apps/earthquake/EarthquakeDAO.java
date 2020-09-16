@@ -1,5 +1,7 @@
 package com.android.apps.earthquake;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -22,4 +24,27 @@ public interface EarthquakeDAO {
 
     @Query("SELECT * FROM earthquake ORDER BY mDate DESC")
     public LiveData<List<Earthquake>> loadAllEarthquakes();
+
+    @Query("SELECT mId as _id, " +
+            "mDetails as suggest_text_1, " +
+            "mId as suggest_intent_data_id " +
+            "FROM earthquake " +
+            "WHERE mDetails LIKE :query " +
+            "ORDER BY mDate DESC")
+    //매개변수로 전달받은 부분 쿼리를 기반으로 하는 검색 제안 커서를 반환하는 새 쿼리 메서드
+    public Cursor generateSearchSuggestions(String query);
+
+    @Query("SELECT * " +
+            "FROM earthquake " +
+            "WHERE mDetails LIKE :query " +
+            "ORDER BY mDate DESC")
+    //검색 결과 전체를 LiveData로 반환
+    public LiveData<List<Earthquake>> searchEarthquakes(String query);
+
+    @Query("SELECT * " +
+            "FROM earthquake " +
+            "WHERE mId = :id " +
+            "LIMIT 1")
+    //검색 제안을 선택하는 것을 처리하기 위한 메서드
+    public LiveData<Earthquake> getEarthquake(String id);
 }

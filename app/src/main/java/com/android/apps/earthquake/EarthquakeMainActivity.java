@@ -2,14 +2,20 @@ package com.android.apps.earthquake;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
@@ -54,7 +60,22 @@ public class EarthquakeMainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, MENU_PREFERENCES, Menu.NONE, R.string.menu_settings);
+
+        //XML에서 옵션 메뉴를 인플레트한다.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        //SearchManager를 사용해
+        //SearchResultActivity와 연결된 SearchableInfo를 찾는다.
+        SearchManager searchManager =
+                (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+
+        SearchableInfo searchableInfo = searchManager.getSearchableInfo(
+                new ComponentName(getApplicationContext(), EarthquakeSearchResultActivity.class));
+        SearchView searchView = (SearchView)menu.findItem(R.id.search_view).getActionView();
+        searchView.setSearchableInfo(searchableInfo);
+        searchView.setIconifiedByDefault(false);
+
         return true;
     }
 
@@ -62,7 +83,7 @@ public class EarthquakeMainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case MENU_PREFERENCES:
+            case R.id.settings_menu_item:
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 startActivityForResult(intent, SHOW_PREFERENCES);
                 return true;
