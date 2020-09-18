@@ -39,10 +39,16 @@
                 android:name="android.app.default_searchable"
                 android:value=".EarthquakeSearchResultActivity"/>
         </activity>
-
         <provider
             android:name=".EarthquakeSearchProvider"
             android:authorities="com.android.provider.earthquake" />
+        <service android:name=".EarthquakeUpdateJobService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE">
+                </action>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

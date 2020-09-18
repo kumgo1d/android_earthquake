@@ -5,6 +5,7 @@
         android:title="Settings"/>
     <item android:id="@+id/search_view"
         android:title="@string/search_label"
+        android:icon="@drawable/ic_search_foreground"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 </menu>

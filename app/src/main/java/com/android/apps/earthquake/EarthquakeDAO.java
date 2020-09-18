@@ -47,4 +47,9 @@ public interface EarthquakeDAO {
             "LIMIT 1")
     //검색 제안을 선택하는 것을 처리하기 위한 메서드
     public LiveData<Earthquake> getEarthquake(String id);
+
+    //onRunJob이 실행되는 백그라운드 스레드로부터 호출될 때
+    //동기식으로 모든 지진 데이터를 반환
+    @Query("SELECT * FROM earthquake ORDER BY mDate DESC")
+    List<Earthquake> loadAllEarthquakesBlocking();
 }
