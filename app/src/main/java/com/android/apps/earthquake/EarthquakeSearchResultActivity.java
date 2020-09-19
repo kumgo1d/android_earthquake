@@ -61,6 +61,8 @@ public class EarthquakeSearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_search_result);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //검색 결과를 보여줄 리사이클러 뷰에 지진 리사이클러 뷰 어댑터를 적용
         RecyclerView recyclerView = findViewById(R.id.search_result_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
