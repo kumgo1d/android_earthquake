@@ -35,7 +35,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EarthquakeMainActivity"/>
         </activity>
-        <activity android:name=".EarthquakeMainActivity">
+        <activity android:name=".EarthquakeMainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

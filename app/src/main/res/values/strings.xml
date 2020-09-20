@@ -12,4 +12,6 @@
     <string name="search_label">Search</string>
     <string name="search_hint">Search for earthquakes...</string>
     <string name="earthquake_channel_name">New Earthquake!</string>
+    <string name="tab_list">List</string>
+    <string name="tab_map">Map</string>
 </resources>

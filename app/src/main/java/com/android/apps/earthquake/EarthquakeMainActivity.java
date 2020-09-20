@@ -3,10 +3,15 @@ package com.android.apps.earthquake;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -17,6 +22,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,20 +44,17 @@ public class EarthquakeMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        FragmentManager fm = getSupportFragmentManager();
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        if(viewPager != null) {
+            PagerAdapter pagerAdapter =
+                    new EarthquakeTabPagerAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(pagerAdapter);
 
-        //구성 변경이 생긴 후에 안드로이드는 이전에 추가된 프래그먼트를 자동으로 추가한다.
-        //따라서 자동으로 다시 시작된 경우가 아닐 때만 추가해야 한다.
-        if(savedInstanceState == null) {
-            FragmentTransaction ft = fm.beginTransaction();
-            mEarthquakeListFragment = new EarthquakeListFragment();
-            ft.add(R.id.main_activity_frame,
-                    mEarthquakeListFragment, TAG_LIST_FRAGMENT);
-            ft.commitNow();
-        } else {
-            mEarthquakeListFragment =
-                    (EarthquakeListFragment)fm.findFragmentByTag(TAG_LIST_FRAGMENT);
+            TabLayout tabLayout = findViewById(R.id.tab_layout);
+            tabLayout.setupWithViewPager(viewPager);
         }
 
         //이 액티비티의 지진 뷰 모델을 가져온다.
@@ -99,5 +103,41 @@ public class EarthquakeMainActivity extends AppCompatActivity
     private void updateEarthquakes() {
         //USGS 피드로부터 가져온 지진 데이터로 뷰 모델을 변경하도록 요청한다.
         earthquakeViewModel.loadEarthquakes();
+    }
+
+    class EarthquakeTabPagerAdapter extends FragmentPagerAdapter {
+        EarthquakeTabPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new EarthquakeListFragment();
+                case 1:
+                    return new EarthquakeMapFragment();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.tab_list);
+                case 1:
+                    return getString(R.string.tab_map);
+                default:
+                    return null;
+            }
+        }
     }
 }
