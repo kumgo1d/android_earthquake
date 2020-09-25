@@ -52,4 +52,7 @@ public interface EarthquakeDAO {
     //동기식으로 모든 지진 데이터를 반환
     @Query("SELECT * FROM earthquake ORDER BY mDate DESC")
     List<Earthquake> loadAllEarthquakesBlocking();
+
+    @Query("SELECT * FROM earthquake ORDER BY mDate DESC LIMIT 1")
+    Earthquake getLatestEarthquake();
 }

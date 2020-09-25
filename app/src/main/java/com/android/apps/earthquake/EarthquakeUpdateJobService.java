@@ -166,6 +166,11 @@ public class EarthquakeUpdateJobService extends SimpleJobService {
                     .earthquakeDAO()
                     .insertEarthquakes(earthquakes);
 
+            //액션 문자열을 갖는 인텐트 위젯에 브로드캐스트한다.
+            Intent newEarthquake = new Intent(this, EarthquakeWidget.class);
+            newEarthquake.setAction(EarthquakeWidget.NEW_QUAKE_BROADCAST);
+            sendBroadcast(newEarthquake);
+
             scheduleNextUpdate(this, job);
             return RESULT_SUCCESS;
         } catch (MalformedURLException e) {
