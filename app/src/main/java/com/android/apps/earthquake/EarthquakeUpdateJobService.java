@@ -171,6 +171,11 @@ public class EarthquakeUpdateJobService extends SimpleJobService {
             newEarthquake.setAction(EarthquakeWidget.NEW_QUAKE_BROADCAST);
             sendBroadcast(newEarthquake);
 
+            //EarthquakeListWidget을 업데이트한다.
+            Intent newListEarthquake = new Intent(this, EarthquakeListWidget.class);
+            newListEarthquake.setAction(EarthquakeWidget.NEW_QUAKE_BROADCAST);
+            sendBroadcast(newListEarthquake);
+
             scheduleNextUpdate(this, job);
             return RESULT_SUCCESS;
         } catch (MalformedURLException e) {

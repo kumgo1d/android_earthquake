@@ -56,6 +56,9 @@
                 </action>
             </intent-filter>
         </service>
+        <service android:name=".EarthquakeRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS">
+        </service>
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBK72M4aCwtko3LfV7qdipSRkT0sRctpag"/>
         <receiver android:name=".EarthquakeWidget">
@@ -65,6 +68,15 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/quake_widget_info"/>
+        </receiver>
+        <receiver android:name=".EarthquakeListWidget"
+            android:label="Earthquake List">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quake_list_widget_info"/>
         </receiver>
     </application>
 
